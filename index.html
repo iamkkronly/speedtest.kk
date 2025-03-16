@@ -3,26 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Internet Speed Test</title>
+    <title>Network Speed Test</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
-        <h1>Internet Speed Test</h1>
-        <div class="gauge">
-            <svg viewBox="0 0 100 50">
-                <path d="M10 50 A40 40 0 0 1 90 50" stroke="#ccc" stroke-width="10" fill="none"/>
-                <path id="speedArc" d="M10 50 A40 40 0 0 1 10 50" stroke="purple" stroke-width="10" fill="none"/>
-            </svg>
-            <div class="speed-text">
-                <h2 id="speed">0.0</h2>
-                <p>Megabits per second</p>
-            </div>
+        <h1>Network Speed Test</h1>
+        <div class="speed-wheel"></div>
+        <div class="speed-results">
+            <p>Download Speed: <span id="download-speed">0</span> Mbps</p>
         </div>
-        <p id="status">Testing download...</p>
-        <button onclick="startSpeedTest()">Start Test</button>
+        <button id="start-test">Start Test</button>
     </div>
-
     <script src="script.js"></script>
 </body>
 </html>
