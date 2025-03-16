@@ -1,31 +1,42 @@
-function startSpeedTest() {
-    let speedText = document.getElementById("speed");
-    let statusText = document.getElementById("status");
-    let arcPath = document.getElementById("speedArc");
+// script.js
+document.getElementById('start-test').addEventListener('click', function() {
+    const speedWheel = document.querySelector('.speed-wheel');
+    const downloadSpeedElement = document.getElementById('download-speed');
 
-    let imageUrl = "https://speed.hetzner.de/10MB.bin"; // Test file
-    let startTime, endTime;
+    // Start the speed wheel animation
+    speedWheel.style.animationPlayState = 'running';
 
-    statusText.textContent = "Testing download...";
-    
-    startTime = new Date().getTime();
-    fetch(imageUrl)
-        .then(response => response.blob())
-        .then(data => {
-            endTime = new Date().getTime();
-            let duration = (endTime - startTime) / 1000; // Convert to seconds
-            let bitsLoaded = data.size * 8; // Convert bytes to bits
-            let speedMbps = (bitsLoaded / (duration * 1024 * 1024)).toFixed(1);
+    // Measure download speed
+    measureDownloadSpeed().then(speed => {
+        // Stop the speed wheel animation
+        speedWheel.style.animationPlayState = 'paused';
 
-            speedText.textContent = speedMbps;
-            statusText.textContent = "Download Complete";
-            updateArc(speedMbps);
-        });
+        // Display the download speed
+        downloadSpeedElement.textContent = speed.toFixed(2);
+    });
+});
 
-    function updateArc(speed) {
-        let angle = Math.min(180, (speed / 100) * 180);
-        let x = 10 + 80 * Math.cos((180 - angle) * Math.PI / 180);
-        let y = 50 - 40 * Math.sin((180 - angle) * Math.PI / 180);
-        arcPath.setAttribute("d", `M10 50 A40 40 0 0 1 ${x} ${y}`);
-    }
+function measureDownloadSpeed() {
+    return new Promise((resolve, reject) => {
+        const startTime = Date.now();
+        const fileSizeInBytes = 10000000; // 10MB file
+        const fileUrl = `https://example.com/file?size=${fileSizeInBytes}`; // Replace with a real file URL
+
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', fileUrl, true);
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                const endTime = Date.now();
+                const durationInSeconds = (endTime - startTime) / 1000;
+                const speedInMbps = (fileSizeInBytes * 8) / (durationInSeconds * 1000000);
+                resolve(speedInMbps);
+            } else {
+                reject(new Error('Failed to load file'));
+            }
+        };
+        xhr.onerror = function() {
+            reject(new Error('Network error'));
+        };
+        xhr.send();
+    });
 }
