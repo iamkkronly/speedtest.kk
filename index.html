@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Internet Speed Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #282c36;
+            color: white;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            margin-top: 100px;
+        }
+        #speed-meter {
+            font-size: 24px;
+            margin: 20px 0;
+        }
+        button {
+            background-color: #ff9800;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 18px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #e68900;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Internet Speed Test</h1>
+        <div id="speed-meter">
+            <h2 id="download-speed">0 Mbps</h2>
+            <p>Download Speed</p>
+            <h2 id="upload-speed">0 Mbps</h2>
+            <p>Upload Speed</p>
+        </div>
+        <button onclick="startSpeedTest()">Start Test</button>
+    </div>
+
+    <script>
+        function startSpeedTest() {
+            let imageUrl = "https://speed.hetzner.de/10MB.bin"; // A 10MB test file
+            let startTime, endTime;
+            
+            // Download Speed Test
+            startTime = new Date().getTime();
+            fetch(imageUrl)
+                .then(response => response.blob())
+                .then(data => {
+                    endTime = new Date().getTime();
+                    let duration = (endTime - startTime) / 1000; // Convert to seconds
+                    let bitsLoaded = data.size * 8; // Convert bytes to bits
+                    let speedMbps = (bitsLoaded / (duration * 1024 * 1024)).toFixed(2);
+                    document.getElementById('download-speed').textContent = `${speedMbps} Mbps`;
+                });
+
+            // Upload Speed Test (Estimate using Network API)
+            if (navigator.connection && navigator.connection.upload) {
+                let uploadSpeed = (navigator.connection.upload / 1024 / 1024).toFixed(2); // Convert to Mbps
+                document.getElementById('upload-speed').textContent = `${uploadSpeed} Mbps`;
+            } else {
+                document.getElementById('upload-speed').textContent = "Estimating...";
+            }
+        }
+    </script>
+</body>
+</html>
